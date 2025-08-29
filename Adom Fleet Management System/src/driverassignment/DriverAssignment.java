@@ -16,7 +16,7 @@
 
  public class DriverAssignment {
      Queue<Driver> driverQueue=new Queue<>();
-     static LinkedList<String> AllDriversID=new LinkedList<String>();
+     static LinkedList<String> AllDriversID= new LinkedList<>();
      static LinkedList<Driver> allDrivers=new LinkedList<>();
      static HashMap<String,Driver> driverHashMap=new HashMap<>();//used to retrieve just a single driver based on driverId
      Queue<Driver> assignedDriversQueue=new Queue<>();

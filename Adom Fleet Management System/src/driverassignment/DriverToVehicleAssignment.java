@@ -24,7 +24,7 @@ public class DriverToVehicleAssignment {
 
     public void LoadAvailableVehicles() {
         try {
-            File vehicleFile = new File("Adom Fleet Management System/src/dummyTextFiles/Vehicles.txt");
+            File vehicleFile = new File("./src/dummyTextFiles/Vehicles.txt");
             Scanner vehicleScanner = new Scanner(vehicleFile);
 
             // Skip the header line

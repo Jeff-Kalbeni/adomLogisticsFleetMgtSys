@@ -36,11 +36,21 @@ public class OrderReader {
         }
         Order[] orders = new Order[numLines + 1];
         try (Scanner orderScanner = new Scanner(new File(this.fileName))) {
+            boolean skipHeader = true; // Flag to skip the first line
             while (orderScanner.hasNextLine()) {
                 String line = orderScanner.nextLine().trim();
-                if(line.isEmpty()){
+                if (line.isEmpty()) {
                     continue;
                 }
+                if (skipHeader) {
+                    skipHeader = false; // Skip only the first line
+                    continue;
+                }
+//            while (orderScanner.hasNextLine()) {
+//                String line = orderScanner.nextLine().trim();
+//                if(line.isEmpty()){
+//                    continue;
+//                }
                 try {
                     String[] fields = line.split(",");
                     int orderId = Integer.parseInt(fields[0]);
