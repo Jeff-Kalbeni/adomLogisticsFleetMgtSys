@@ -1,0 +1,283 @@
+@startuml
+!define RECTANGLE class
+!define TABLE class
+
+'skinparam monochrome true
+
+' Define MaintenanceScheduler class
+class MaintenanceScheduler {
+    - heap : MinHeap
+
+    + MaintenanceScheduler()
+    + loadFromVehicleList(vehicles : Vehicle[])
+    + getNextVehiclesForService(n : int) : Vehicle[]
+    + markAsServiced(vehicles : Vehicle[], mechanicShop : String, tCost : float)
+    - markAsServiced(vehicle : Vehicle, cost : float, mechanicShop : String)
+    - shouldFlagForService(vehicle : Vehicle) : boolean
+}
+
+' Define Maintenance class
+class Maintenance {
+    - vehicleId : int
+    - vehiclePartsRepaired : HashMap<String, LinkedList<Float>>
+    - dateOfLastRepairs : Date
+    - lastMechanicShop : String
+    - daysSinceLastRepairs : int
+    - partsNeedingRepairs : PriorityQueue<String>
+
+    + Maintenance(vehicleId : int, daysSinceLastRepairs : int,
+    dateOfLastRepairs : Date, lastMechanicShop : String)
+    + Maintenance(vehicleId : int, vehiclePartsRepaired : HashMap<String,
+    LinkedList<Float>>, daysSinceLastRepairs : int, dateOfLastRepairs : Date, lastMechanicShop : String)
+    + Maintenance(vehicleId : int)
+    + addPartRepaired(partName : String, cost : float)
+    + isPartRepaired(partName : String) : boolean
+    + getTotalCostOfRepairs() : float
+    + getDateOfLastRepairs() : Date
+    + getVehicleId() : int
+    + getVehiclePartsRepaired() : HashMap<String, LinkedList<Float>>
+    + getLastMechanicShop() : String
+    + getDaysSinceLastRepairs() : int
+    + setDaysSinceLastRepairs(n : int)
+    + setDateOfLastRepairs(dateOfRepairs : Date)
+    + setLastMechanicShop(mechanicShop : String)
+    + addPartNeedingRepairs(partNeedingRepairs : String, priority : int)
+    + getUrgentPartNeedingRepairs() : String
+}
+
+' Define Driver class
+class Driver {
+    - driverID : String
+    - driverName : String
+    - licenseType : String
+    - assignedVehicleID : int
+    - assignedOrderID : int
+    - availability : String
+    - orderStatus : OrderStatus
+    - currentDriverLocation : String
+    - experience : LinkedList<String>
+
+    + Driver(driverID : String, driverName : String, licenseTpye : String,
+     availability : String, location : String, experience : LinkedList<String>)
+    + Driver(ID : String)
+    + getDriverID() : String
+    + getDriverName() : String
+    + getLicenseType() : String
+    + setAssignVehicleID(vehicleID : int)
+    + getAssignedVehicleID() : int
+    + setAssignOrderID(orderID : int)
+    + getAssignedOrderID() : int
+    + updateOrderStatus(status : OrderStatus)
+    + getOrderStatus() : String
+    + getDriverLocation() : String
+    + updateAvailability(status : AvailabilityStatus)
+    + getAvailability() : String
+    + addExperience(location : String)
+    + searchExperience(orderOrigin : String) : boolean
+    + toString() : String
+}
+
+' Define Order class
+class Order {
+    - orderId : int
+    - clientName : String
+    - assignedDriver : String
+    - origin : String
+    - destination : String
+    - deliveryStatus : String
+    - scheduledDateTime : LocalDateTime
+    - pickupTime : LocalDateTime
+    - eta : LocalDateTime
+    - originLatitude : double
+    - originLongitude : double
+    - destinationLatitude : double
+    - destinationLongitude : double
+    - currentLatitude : double
+    - currentLongitude : double
+
+    + Order(orderId : int, clientName : String, origin : String,
+        destination : String, scheduledDateTime : LocalDateTime,
+        originLatitude : double, originLongitude : double,
+        destinationLatitude : double, destinationLongitude : double)
+    + getOrderId() : int
+    + getClientName() : String
+    + getAssignedDriver() : String
+    + setAssignedDriver(assignedDriver : String)
+    + getOrigin() : String
+    + getDestination() : String
+    + getDeliveryStatus() : String
+    + setDeliveryStatus(deliveryStatus : String)
+    + getScheduledDateTime() : LocalDateTime
+    + getPickupTime() : LocalDateTime
+    + setPickupTime(pickupTime : LocalDateTime)
+    + getEta() : LocalDateTime
+    + setEta(eta : LocalDateTime)
+    + getWaitTime() : Duration
+    + getOriginLatitude() : double
+    + getOriginLongitude() : double
+    + getDestinationLatitude() : double
+    + getDestinationLongitude() : double
+    + getCurrentLatitude() : double
+    + getCurrentLongitude() : double
+    + updateCurrentLocation(latitude : double, longitude : double)
+    + assignToDriver(driverName : String)
+    + updateDeliveryStatus(newStatus : String)
+    + toString() : String
+}
+
+' Define Vehicle class
+class Vehicle {
+    - vehicleId : int
+    - registrationNumber : String
+    - vehicleType : String
+    - mileage : int
+    - fuelUse : float
+    - assignedDriverId : String
+    - maintenanceHistory : HashMap<Integer, Maintenance>
+    - currentLong : double
+    - currentLat : double
+    - currentDriver : String
+    - daysSinceLastService : int
+    - maintenanceInfo : Maintenance
+
+    + Vehicle(vehicleId : int, registrationNumber : String,
+        vehicleType : String, mileage : int, fuelUse : float,
+        currentLong : double, currentLat : double,
+        currentDriver : String, daysSinceLastService : int)
+    + Vehicle(ID : int)
+    + canBeAssignedToDriver() : boolean
+    + checkOffForMaintenance(maintenance : Maintenance)
+    + calculateAverageFuelConsumption() : float
+    + flagOutliers(threshold : float) : boolean
+    + sortVehicleByFuelPerformance(vehicles : Vehicle[])
+    + filterVehiclesByFuelPerformance(vehicles : Vehicle[], minFuel : float, maxFuel : float) : Vehicle[]
+    + compareTo(other : Vehicle) : int
+    + toString() : String
+    + getVehicleId() : int
+    + getRegistrationNumber() : String
+    + getVehicleType() : String
+    + getMileage() : int
+    + getFuelUse() : float
+    + getAssignedDriverId() : String
+    + getMaintenanceHistory() : HashMap<Integer, Maintenance>
+    + getCurrentLat() : double
+    + getCurrentLong() : double
+    + getCurrentDriver() : String
+    + getDaysSinceLastService() : int
+    + setAssignedDriverId(assignedDriverId : String)
+    + setMileage(mileage : int)
+    + setFuelUse(fuelUse : float)
+    + setCurrentLat(currentLat : double)
+    + setCurrentLong(currentLong : double)
+    + setCurrentDriver(currentDriver : String)
+    + setDaysSinceLastService(daysSinceLastService : int)
+    + getMaintenanceInfo() : Maintenance
+    + updateMaintenanceInfo(partRepaired : String, daysSinceLastRepairs : int,
+        dateOfLastRepairs : Date, costOfRepairs : float, lastMechanicShop : String)
+    + setMaintenanceInfo(maintenance : Maintenance)
+    + addRepair(partNeedingRepairs : String, priority : int)
+}
+
+' Define supporting data structure classes
+class MinHeap {
+    + insert(vehicle : Vehicle)
+    + extractMin() : Vehicle
+    + isEmpty() : boolean
+}
+
+class HashMap {
+    + getBuckets() : HashNode<K, V>[]
+    + get(key : K) : V
+    + put(key : K, value : V)
+    + containsKey(key : K) : boolean
+}
+
+class LinkedList<T> {
+    + head : Node<T>
+    + size : int
+    + add(entity : T)
+    + getHead() : Node<T>
+}
+
+class Node<T> {
+    + entity : T
+    + nextNode : Node<T>
+    + Node(entity : T)
+}
+
+class PriorityQueue<T> {
+    + enqueue(value : T, priority : int)
+    + dequeue()
+    + peek() : PriorityNode<T>
+}
+
+class PriorityNode<T> {
+    - value : T
+    - priority : int
+    - next : PriorityNode<T>
+    + getValue() : T
+    + getPriority() : int
+    + next() : PriorityNode<T>
+}
+
+class HashNode<K, V> {
+    + key : K
+    + value : V
+    + next : HashNode<K, V>
+    + getKey() : K
+    + getValue() : V
+}
+
+class Date {
+    + Date()
+}
+
+class DateTime {
+    + LocalDateTime()
+}
+
+' Define enums
+'enum models.Driver.OrderStatus {
+'    IN_TRANSIT
+'    DELIVERED
+'    REROUTED
+'}
+'
+'enum models.Driver.AvailabilityStatus {
+'    ON_DUTY
+'    OFF_DUTY
+'}
+'
+'enum models.Order.DeliveryStatus {
+'    IN_TRANSIT
+'    DELIVERED
+'    REROUTED
+'    STUCK
+'}
+
+' Relationships
+MaintenanceScheduler o--> "1" MinHeap
+MaintenanceScheduler o--> "*" Vehicle
+Vehicle o--> "1" Maintenance : maintenanceInfo
+Vehicle o--> "1" HashMap : maintenanceHistory
+Maintenance o--> "1" HashMap : vehiclePartsRepaired
+HashMap o--> "*" HashNode
+HashNode o--> "1" LinkedList : value
+LinkedList o--> "1" Node
+Maintenance o--> "1" Date : dateOfLastRepairs
+Maintenance o--> "1" PriorityQueue : partsNeedingRepairs
+PriorityQueue o--> "1" PriorityNode
+Driver o--> "1" LinkedList : experience
+Driver o--> "1" OrderStatus
+Driver o--> "1" AvailabilityStatus
+Order o--> "1" DeliveryStatus
+Order o--> "1" LocalDateTime : scheduledDateTime
+Order o--> "1" LocalDateTime : pickupTime
+Order o--> "1" LocalDateTime : eta
+
+' Hide internal details of supporting classes for clarity
+
+
+
+
+@enduml
